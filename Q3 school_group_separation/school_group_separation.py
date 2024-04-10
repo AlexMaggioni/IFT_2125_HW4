@@ -1,5 +1,5 @@
-#Nom, matricule
-#Nom, matricule
+#Alex Maggioni, 20266243
+#Canelle Wagner, 20232321
 
 import sys
 from collections import deque
