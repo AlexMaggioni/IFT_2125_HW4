@@ -9,16 +9,17 @@ import itertools
 from functools import lru_cache
 #import time
 
+
 # Test de primalité de Miller-Rabin pour les nombres inférieurs à 10^24
 # Memoization des résultats de miller_rabin
-@lru_cache(None)
+@lru_cache(None) 
 def miller_rabin(n):
     if n < 2:
         return False
     if n < 4:
         return True
-    if any(n % p == 0 for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)):
-        return n in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37)
+    if any(n % p == 0 for p in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41)):
+        return n in (2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41)
 
     # Décomposition de n-1 en r * 2^s
     r, s = n - 1, 0
@@ -38,7 +39,7 @@ def miller_rabin(n):
         return True  # n est composé
 
     # Bases à tester
-    bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37]
+    bases = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41]
     for a in bases:
         if a % n != 0:  # On ne teste pas les bases qui sont multiples de n
             if check_composite(a):
@@ -46,11 +47,13 @@ def miller_rabin(n):
 
     return True  # Si n passe le test pour toutes les bases, il est probablement premier
 
+
 # Fonction pour tester si une paire de nombres est spéciale (les deux concaténations donnent des nombres premiers)
 def is_special_pair(p1, p2):
     concat1 = int(f"{p1}{p2}")
     concat2 = int(f"{p2}{p1}")
     return miller_rabin(concat1) and miller_rabin(concat2)
+
 
 # Fonction pour trouver des paires spéciales jusqu'à une certaine limite
 def find_special_pairs(limit):
@@ -121,6 +124,8 @@ def main(args):
     #execution_time = end_time - start_time  
     #print(f"Execution time: {execution_time:.2f} seconds")  
 
+
+    
 
 # NE PAS TOUCHER
 # DO NOT TOUCH

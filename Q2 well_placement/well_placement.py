@@ -5,33 +5,38 @@ import sys
 from collections import deque
 
 class UnionFind:
+    # Initialisation des structures de données
     def __init__(self, size):
-        self.parent = list(range(size))
-        self.rank = [0] * size
-        self.size = [1] * size
+        self.parent = list(range(size))  
+        self.rank = [0] * size  # hauteur de l'arbre
+        self.size = [1] * size  # taille de l'ensemble
 
+    # Trouver la racine de l'ensemble de 'x', avec compression de chemin
     def find(self, x):
         if self.parent[x] != x:
-            self.parent[x] = self.find(self.parent[x])
+            # Compresser le chemin en remontant l'arbre
+            self.parent[x] = self.find(self.parent[x])  
         return self.parent[x]
 
+    # Faire l'union des ensembles de 'x' et 'y'
     def union(self, x, y):
-        rootX = self.find(x)
-        rootY = self.find(y)
-        if rootX != rootY:
-            if self.rank[rootX] > self.rank[rootY]:
+        rootX, rootY = self.find(x), self.find(y)
+        if rootX != rootY:  # Si 'x' et 'y' ne sont pas déjà dans le même ensemble
+            # Attacher l'arbre plus petit sous la racine de l'arbre plus grand
+            if self.rank[rootX] > self.rank[rootY]:  
                 self.parent[rootY] = rootX
                 self.size[rootX] += self.size[rootY]
             elif self.rank[rootX] < self.rank[rootY]:
                 self.parent[rootX] = rootY
                 self.size[rootY] += self.size[rootX]
-            else:
+            else:  # Si les rangs sont égaux, choisir un comme parent et augmenter son rang
                 self.parent[rootY] = rootX
                 self.rank[rootX] += 1
                 self.size[rootX] += self.size[rootY]
 
+    # Renvoyer la taille de l'ensemble contenant 'x'
     def getSize(self, x):
-        return self.size[self.find(x)]
+        return self.size[self.find(x)]  
 
 def read_problem(input_file="input.txt"):
     """Fonctions pour lire/écrire dans les fichier. Vous pouvez les modifier,
@@ -54,22 +59,28 @@ def read_problem(input_file="input.txt"):
     return grid, n, m
 
 def find_largest_aquifer(grid, n, m):
-    uf = UnionFind(n * m)
+    # Initialiser une structure Union-Find pour la grille
+    uf = UnionFind(n * m)  
     for i in range(n):
         for j in range(m):
-            if grid[i][j] == 1:
-                for di, dj in [(0, 1), (1, 0)]:  # Only right and down to avoid redundancy
-                    ni, nj = i + di, j + dj
+            if grid[i][j] == 1:  # Vérifier si la cellule contient un aquifère
+                # Examiner les cellules adjacentes à droite et en bas pour éviter les doubles comptages
+                for di, dj in [(0, 1), (1, 0)]:
+                    # Calculer les coordonnées de la cellule voisine
+                    ni, nj = i + di, j + dj  
+                    # Vérifier si la cellule voisine est dans la grille et contient un aquifère
                     if 0 <= ni < n and 0 <= nj < m and grid[ni][nj] == 1:
-                        uf.union(i * m + j, ni * m + nj)
-
-    largest = 0
+                        # Fusionner les deux aquifères dans l'Union-Find
+                        uf.union(i * m + j, ni * m + nj)  
+    largest = 0 
     for i in range(n):
         for j in range(m):
-            if grid[i][j] == 1:
+            if grid[i][j] == 1:  # Si la cellule contient un aquifère
+                # Mettre à jour la plus grande taille si nécessaire
                 largest = max(largest, uf.getSize(i * m + j))
 
-    return largest
+    return largest  
+
     
 def write(fileName, content):
     """Écrire la sortie dans un fichier/write output in file"""
